@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:blockpay_frontend/components/block_pay_home.dart';
 import 'package:blockpay_frontend/model/endpointModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -341,18 +342,32 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       String phone = phoneSUController.text;
                       String password = passwordSUController.text;
 
-                      var message =
+                      var successfulCA =
                           await createAccount(username, email, phone, password);
-                      if (message == "successful") {
-                        var logInMessage = await logIn(username, password);
-                      } else {
-                        return;
+                      if (successfulCA) {
+                        var successfulLogin = await logIn(username, password);
+                        if (successfulLogin) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext context) => BlockPayHome(),
+                            ),
+                          );
+                        }
                       }
                     } else {
                       String id = idSiController.text;
                       String password = passwordSIController.text;
 
-                      var logInMessage = await logIn(id, password);
+                      var successfulLogin = await logIn(id, password);
+                      if (successfulLogin) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => BlockPayHome(),
+                          ),
+                        );
+                      }
                     }
                   },
                 )
@@ -391,7 +406,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     );
   }
 
-  Future<String> createAccount(
+  Future<bool> createAccount(
       String username, String email, String phone, String password) async {
     var url = HttpManager.getCreateAccountEndpoint();
     var response = await http.post(url, headers: {
@@ -403,13 +418,16 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     });
     final body = jsonDecode(response.body);
     if (body["message"] != "successful") {
-      return body["message"];
+      return false;
     }
-    var logInMessage = await logIn(username, password);
-    return logInMessage;
+    var loginSuccess = await logIn(username, password);
+    if (loginSuccess) {
+      return true;
+    }
+    return false;
   }
 
-  Future<String> logIn(String id, String password) async {
+  Future<bool> logIn(String id, String password) async {
     var url = HttpManager.getLogInEndpoint();
     bool emailValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -428,12 +446,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     final body = jsonDecode(response.body);
     print(body);
     if (body["message"] != "successful") {
-      return body["message"];
+      return false;
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     await prefs.setString("accessToken", body["accessToken"]);
     await prefs.setString("refreshToken", body["refreshToken"]);
-    return body["message"];
+    return true;
   }
 }

@@ -1,8 +1,9 @@
+import 'package:blockpay_frontend/account_page/account_page.dart';
 import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatelessWidget {
   const HeaderWidget({
-     Key? key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -18,8 +19,18 @@ class HeaderWidget extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          CircleAvatar(
-            child: Icon(Icons.people),
+          GestureDetector(
+            child: CircleAvatar(
+              child: Icon(Icons.people),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => AccountPage(),
+                ),
+              );
+            },
           ),
         ],
       ),

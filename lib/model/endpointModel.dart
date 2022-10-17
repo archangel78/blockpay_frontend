@@ -19,10 +19,27 @@ class HttpManager {
     return Uri.http("$host:$port", "/test_jwt");
   }
 
+  static Uri getRenewJwtEndpoint() {
+    return Uri.http("$host:$port", "/renew_token");
+  }
+
   static Future<bool> renewAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString("accessToken");
-
+    String? refreshToken = prefs.getString("refreshToken");
+    if (accessToken != null && refreshToken != null) {
+      var url = HttpManager.getRenewJwtEndpoint();
+      var response = await http.post(url, headers: {
+        "Accesstoken": accessToken,
+        "Refreshtoken": refreshToken,
+      });
+      var body = jsonDecode(response.body);
+      if (body["message"] == "successful") {
+        prefs.setString("accessToken", body["accessToken"]);
+        return true;
+      }
+      return false;
+    }
     return false;
   }
 
@@ -34,11 +51,20 @@ class HttpManager {
       var response = await http.get(url, headers: {
         "Accesstoken": accessToken,
       });
-      final body = await jsonDecode(response.body);
+      final body = jsonDecode(response.body);
       if (body["valid"] == "true") {
+        Duration remainingTime = JwtDecoder.getRemainingTime(accessToken);
+        Duration timeToRenew = Duration(minutes: 3);
+        if (remainingTime.compareTo(timeToRenew) < 0) {
+          if (!await renewAccessToken()) {
+            return "false";
+          }
+        }
         return "true";
       } else if (body["valid"] == "expired") {
-        bool success = await renewAccessToken();
+        if (await renewAccessToken()) {
+          return "true";
+        }
       }
     }
     return "false";
