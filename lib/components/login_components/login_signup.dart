@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:blockpay_frontend/model/endpointModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:http/http.dart' as http;
 import 'package:blockpay_frontend/model/signinColorPallete.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginSignupScreen extends StatefulWidget {
   @override
@@ -241,7 +240,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               false, passwordSUController),
           Container(
             width: 200,
-            margin: EdgeInsets.only(top: 20),
+            margin: EdgeInsets.only(top: 30),
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -335,7 +334,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       color: Colors.white,
                     ),
                   ),
-                  onTap: () {
+                  onTap: () async {
                     if (isSignupScreen) {
                       String username = unameSUpController.text;
                       String email = emailSUpController.text;
@@ -343,22 +342,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       String password = passwordSUController.text;
 
                       var message =
-                          createAccount(username, email, phone, password);
+                          await createAccount(username, email, phone, password);
                       if (message == "successful") {
-                        var body = logIn(username, password);
+                        var logInMessage = await logIn(username, password);
+                      } else {
+                        return;
                       }
                     } else {
                       String id = idSiController.text;
-                      String password= passwordSIController.text;
+                      String password = passwordSIController.text;
 
-                      var logInbody = logIn(id, password);
-                          if (logInBody["message"] != "successful"){
-      return body["message"];
-    }
-    final storage = new FlutterSecureStorage();
-    await storage.write(key: "accessToken", value: "accessToken");
-    await storage.write(key: "refreshToken", value: "refreshToken");
-
+                      var logInMessage = await logIn(id, password);
                     }
                   },
                 )
@@ -399,10 +393,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   Future<String> createAccount(
       String username, String email, String phone, String password) async {
-    var url = Endpoints.getCreateAccountEndpoint();
+    var url = HttpManager.getCreateAccountEndpoint();
     var response = await http.post(url, headers: {
       "accountname": username,
-      "emailid": email,
+      "Emailid": email,
       "password": password,
       "Phoneno": phone,
       "Countrycode": "91"
@@ -410,19 +404,13 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     final body = jsonDecode(response.body);
     if (body["message"] != "successful") {
       return body["message"];
-    } 
-    var logInBody = await logIn(username, password);
-
-    if (logInBody["message"] != "successful"){
-      return body["message"];
     }
-    final storage = new FlutterSecureStorage();
-    await storage.write(key: "accessToken", value: "accessToken");
-    await storage.write(key: "refreshToken", value: "refreshToken");
+    var logInMessage = await logIn(username, password);
+    return logInMessage;
   }
 
-  Future<dynamic> logIn(String id, String password) async {
-    var url = Endpoints.getCreateAccountEndpoint();
+  Future<String> logIn(String id, String password) async {
+    var url = HttpManager.getLogInEndpoint();
     bool emailValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(id);
@@ -438,6 +426,14 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       "password": password,
     });
     final body = jsonDecode(response.body);
-    return body;
+    print(body);
+    if (body["message"] != "successful") {
+      return body["message"];
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString("accessToken", body["accessToken"]);
+    await prefs.setString("refreshToken", body["refreshToken"]);
+    return body["message"];
   }
 }
