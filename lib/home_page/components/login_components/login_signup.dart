@@ -346,8 +346,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: [
-                              Color.fromARGB(198, 234, 67, 6),
-                              Color.fromARGB(255, 211, 4, 4)
+                              Color.fromARGB(255, 18, 6, 92),
+                              Color.fromARGB(255, 26, 13, 112),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight),

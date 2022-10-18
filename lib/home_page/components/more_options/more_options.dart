@@ -1,3 +1,4 @@
+import 'package:blockpay_frontend/prepayment_pages/send_account_id.dart';
 import 'package:flutter/material.dart';
 
 class MoreOptions extends StatefulWidget {
@@ -33,27 +34,37 @@ class _MoreOptionsState extends State<MoreOptions> {
               )
             ],
           ),
-          Column(
-            children: [
-              Icon(
-                Icons.account_circle_rounded,
-                color: Color.fromARGB(255, 22, 83, 205),
-                size: 45,
-              ),
-              SizedBox(height: 5,),
-              Column(
-                children: [
-                  Text(
-                    "Send to",
-                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                  ),
-                  Text(
-                    "Account Id",
-                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                  ),
-                ],
-              )
-            ],
+          GestureDetector(
+            onTap: (() {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SendAccountIdPage()),
+              );
+            }),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.account_circle_rounded,
+                  color: Color.fromARGB(255, 22, 83, 205),
+                  size: 45,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Column(
+                  children: [
+                    Text(
+                      "Send to",
+                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                    ),
+                    Text(
+                      "Account Id",
+                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
           Column(
             children: [
