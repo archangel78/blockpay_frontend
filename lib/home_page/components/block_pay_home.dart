@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:blockpay_frontend/components/invite_components/invite_section.dart';
-import 'package:blockpay_frontend/components/more_options/more_options.dart';
+import 'package:blockpay_frontend/home_page/components/invite_components/invite_section.dart';
+import 'package:blockpay_frontend/home_page/components/more_options/more_options.dart';
 
 import 'separator.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ import 'header_components/people_header.dart';
 import 'header_components/account_header.dart';
 import 'header_components/scroll_handle.dart';
 import 'header_components/more_options_header.dart';
-import 'package:blockpay_frontend/components/quick_access_components/quick_access_components.dart';
+import 'package:blockpay_frontend/home_page/components/quick_access_components/quick_access_components.dart';
 
 class BlockPayHome extends StatefulWidget {
   @override
@@ -67,23 +67,28 @@ class _BlockPayHomeState extends State<BlockPayHome> {
                           SizedBox(height: 20),
                           PeopleHeader(),
                           SizedBox(height: 20),
-                          UserDetails(controller: myScrollController),
                           LoadMore(),
                           SizedBox(height: 30),
                           Separator(),
                           SizedBox(height: 30),
                           MoreHeader(),
-                          SizedBox(height: 20,),
+                          SizedBox(
+                            height: 20,
+                          ),
                           MoreOptions(),
                           SizedBox(height: 25),
                           Separator(),
-                          SizedBox(height: 20,),
+                          SizedBox(
+                            height: 20,
+                          ),
                           AccountHeader(),
                           SizedBox(height: 30),
                           CashUtils(),
                           SizedBox(height: 30),
                           InviteSection(),
-                          SizedBox(height: 10,)
+                          SizedBox(
+                            height: 10,
+                          )
                         ],
                       ),
                     );

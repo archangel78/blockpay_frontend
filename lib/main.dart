@@ -1,14 +1,14 @@
-import 'package:blockpay_frontend/components/block_pay_home.dart';
+import 'package:blockpay_frontend/home_page/components/block_pay_home.dart';
 import 'package:flutter/material.dart';
 
-import 'components/login_components/login_signup.dart';
+import 'home_page/components/login_components/login_signup.dart';
 import 'package:blockpay_frontend/model/endpointModel.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(BlockPayApp());
 }
 
-class MyApp extends StatelessWidget {
+class BlockPayApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

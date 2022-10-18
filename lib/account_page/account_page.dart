@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'logout_screen.dart';
 
 class AccountPage extends StatelessWidget {
   @override
@@ -7,7 +10,10 @@ class AccountPage extends StatelessWidget {
       child: ElevatedButton(
         child: Text("Log Out"),
         onPressed: () {
-          Navigator.popUntil(context, ModalRoute.withName('/'));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LogOutScreen()),
+          );
         },
       ),
     );

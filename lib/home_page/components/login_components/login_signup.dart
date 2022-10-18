@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'package:blockpay_frontend/components/block_pay_home.dart';
+import 'package:blockpay_frontend/account_page/account_page.dart';
+import 'package:blockpay_frontend/home_page/components/block_pay_home.dart';
+import 'package:blockpay_frontend/main.dart';
 import 'package:blockpay_frontend/model/endpointModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -16,6 +18,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   bool isSignupScreen = true;
   bool isMale = true;
   bool isRememberMe = false;
+  bool isLoginError = false;
+  bool isSignUpError = false;
+  String loginError = "Some error occurred while logging in";
+  String signUpError = "Some error occurred while Signing up";
 
   final unameSUpController = TextEditingController();
   final emailSUpController = TextEditingController();
@@ -89,7 +95,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             ),
           ),
           // Trick to add the shadow for the submit button
-          buildBottomHalfContainer(true),
+          buildBottomHalfContainer(true, context),
           //Main Contianer for Login and Signup
           AnimatedPositioned(
             duration: Duration(milliseconds: 700),
@@ -98,7 +104,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             child: AnimatedContainer(
               duration: Duration(milliseconds: 700),
               curve: Curves.bounceInOut,
-              height: isSignupScreen ? 380 : 250,
+              height: isSignupScreen ? 385 : 270,
               padding: EdgeInsets.all(20),
               width: MediaQuery.of(context).size.width - 40,
               margin: EdgeInsets.symmetric(horizontal: 20),
@@ -181,7 +187,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             ),
           ),
           // Trick to add the submit button
-          buildBottomHalfContainer(false),
+          buildBottomHalfContainer(false, context),
         ],
       ),
     );
@@ -196,6 +202,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               idSiController),
           buildTextField(MaterialCommunityIcons.lock_outline, "**********",
               true, false, passwordSIController),
+          (isLoginError)
+              ? Container(
+                  child: Text(
+                    loginError,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  alignment: Alignment.topLeft,
+                )
+              : SizedBox(
+                  height: 0,
+                ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -220,7 +237,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                     style: TextStyle(fontSize: 12, color: Palette.textColor1)),
               )
             ],
-          )
+          ),
         ],
       ),
     );
@@ -239,9 +256,21 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               false, true, phoneSUController),
           buildTextField(MaterialCommunityIcons.lock_outline, "password", true,
               false, passwordSUController),
+          (isSignUpError)
+              ? Container(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text(
+                    signUpError,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  alignment: Alignment.topLeft,
+                )
+              : SizedBox(
+                  height: 0,
+                ),
           Container(
             width: 200,
-            margin: EdgeInsets.only(top: 30),
+            margin: EdgeInsets.only(top: 15),
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
@@ -288,7 +317,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     );
   }
 
-  Widget buildBottomHalfContainer(bool showShadow) {
+  Widget buildBottomHalfContainer(bool showShadow, BuildContext context) {
     return AnimatedPositioned(
       duration: Duration(milliseconds: 700),
       curve: Curves.bounceInOut,
@@ -342,31 +371,41 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       String phone = phoneSUController.text;
                       String password = passwordSUController.text;
 
+                      if (!verifySignUpLength("Username", username, 4) ||
+                          !verifySignUpLength("Email", email, 8) ||
+                          !verifySignUpLength("Phone", phone, 8) ||
+                          !verifySignUpLength("Password", password, 5)) {
+                        return;
+                      }
+
                       var successfulCA =
                           await createAccount(username, email, phone, password);
                       if (successfulCA) {
                         var successfulLogin = await logIn(username, password);
                         if (successfulLogin) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) => BlockPayHome(),
-                            ),
-                          );
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BlockPayHome()),
+                              ModalRoute.withName("/"));
                         }
                       }
                     } else {
                       String id = idSiController.text;
                       String password = passwordSIController.text;
 
+                      if (!verifyLogInLength("Username or Email", id, 4) ||
+                          !verifyLogInLength("Password", password, 5)) {
+                        return;
+                      }
+
                       var successfulLogin = await logIn(id, password);
                       if (successfulLogin) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) => BlockPayHome(),
-                          ),
-                        );
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BlockPayHome()),
+                            ModalRoute.withName("/"));
                       }
                     }
                   },
@@ -417,7 +456,12 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       "Countrycode": "91"
     });
     final body = jsonDecode(response.body);
+    print(body);
     if (body["message"] != "successful") {
+      setState(() {
+        isSignUpError = true;
+        signUpError = body["message"];
+      });
       return false;
     }
     var loginSuccess = await logIn(username, password);
@@ -445,13 +489,48 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     });
     final body = jsonDecode(response.body);
     print(body);
-    if (body["message"] != "successful") {
+    if (body["message"] == "successful") {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      await prefs.setString("accessToken", body["accessToken"]);
+      await prefs.setString("refreshToken", body["refreshToken"]);
+      return true;
+    } else if (body["message"] == "Unauthorized") {
+      setState(() {
+        isLoginError = true;
+        loginError = "Invalid Credentials";
+      });
+      return false;
+    } else {
+      setState(() {
+        isLoginError = true;
+        loginError = body["message"];
+      });
       return false;
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  }
 
-    await prefs.setString("accessToken", body["accessToken"]);
-    await prefs.setString("refreshToken", body["refreshToken"]);
+  bool verifySignUpLength(String fieldName, String value, int requiredLength) {
+    if (value.length < requiredLength) {
+      setState(() {
+        isSignUpError = true;
+        signUpError =
+            "$fieldName should be longer than $requiredLength characters";
+      });
+      return false;
+    }
+    return true;
+  }
+
+  bool verifyLogInLength(String fieldName, String value, int requiredLength) {
+    if (value.length < requiredLength) {
+      setState(() {
+        isLoginError = true;
+        loginError =
+            "$fieldName should be longer than $requiredLength characters";
+      });
+      return false;
+    }
     return true;
   }
 }
