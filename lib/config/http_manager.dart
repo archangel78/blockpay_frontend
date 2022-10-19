@@ -23,6 +23,10 @@ class HttpManager {
     return Uri.http("$host:$port", "/renew_token");
   }
 
+  static Uri getCheckAccountEndpoint() {
+    return Uri.http("$host:$port", "/check_account");
+  }
+
   static Future<bool> renewAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString("accessToken");

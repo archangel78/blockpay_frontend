@@ -1,4 +1,4 @@
-import 'package:blockpay_frontend/home_page/components/login_components/login_signup.dart';
+import 'package:blockpay_frontend/login_signup_page/login_signup.dart';
 import 'package:blockpay_frontend/main.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:blockpay_frontend/account_page/account_page.dart';
 import 'package:blockpay_frontend/home_page/components/block_pay_home.dart';
 import 'package:blockpay_frontend/main.dart';
-import 'package:blockpay_frontend/model/endpointModel.dart';
+import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:http/http.dart' as http;
@@ -388,7 +388,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                               MaterialPageRoute(
                                   builder: (context) => BlockPayHome()),
                               ModalRoute.withName("/"));
+                        } else {
+                          setState(() {
+                            isSignUpError = true;
+                            signUpError = "Some unkown error occurred";
+                          });
                         }
+                      } else {
+                        setState(() {
+                          isSignUpError = true;
+                          signUpError = "Some unkown error occurred";
+                        });
                       }
                     } else {
                       String id = idSiController.text;
@@ -398,7 +408,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                           !verifyLogInLength("Password", password, 5)) {
                         return;
                       }
-
                       var successfulLogin = await logIn(id, password);
                       if (successfulLogin) {
                         Navigator.pushAndRemoveUntil(
@@ -406,6 +415,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                             MaterialPageRoute(
                                 builder: (context) => BlockPayHome()),
                             ModalRoute.withName("/"));
+                      } else {
+                        setState(() {
+                          isLoginError = true;
+                          loginError = "Some unkown error occurred";
+                        });
                       }
                     }
                   },
@@ -448,13 +462,19 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   Future<bool> createAccount(
       String username, String email, String phone, String password) async {
     var url = HttpManager.getCreateAccountEndpoint();
+    bool successfulReq = true;
     var response = await http.post(url, headers: {
       "accountname": username,
       "Emailid": email,
       "password": password,
       "Phoneno": phone,
       "Countrycode": "91"
+    }).catchError((error) {
+      successfulReq = false;
     });
+    if (!successfulReq) {
+      return false;
+    }
     final body = jsonDecode(response.body);
     print(body);
     if (body["message"] != "successful") {
@@ -482,11 +502,16 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     } else {
       idName = "Accountname";
     }
-
+    bool successfulReq = true;
     var response = await http.post(url, headers: {
       idName: id,
       "password": password,
+    }).catchError((error) {
+      successfulReq = false;
     });
+    if (!successfulReq) {
+      return false;
+    }
     final body = jsonDecode(response.body);
     print(body);
     if (body["message"] == "successful") {
