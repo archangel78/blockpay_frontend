@@ -27,6 +27,10 @@ class HttpManager {
     return Uri.http("$host:$port", "/check_account");
   }
 
+  static Uri getVerifyAmountEndpoint() {
+    return Uri.http("$host:$port", "/verify_send_amount");
+  }
+
   static Future<bool> renewAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString("accessToken");

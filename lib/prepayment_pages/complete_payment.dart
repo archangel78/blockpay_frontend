@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:blockpay_frontend/model/signinColorPallete.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +52,7 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
                     error,
-                    style: GoogleFonts.cairo(fontSize: 20, color: Colors.red),
+                    style: GoogleFonts.cairo(fontSize: 15, color: Colors.red),
                   ),
                 )
               : SizedBox(
@@ -84,10 +83,28 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
           ),
           GestureDetector(
             onTap: () {
-              setState(() {
-                isError = false;
-                isLoading = true;
-              });
+              String amountText = amountFieldController.text;
+              try {
+                double amount = double.parse(amountText);
+                if (amount < 0.01 || amountFieldController.text == "") {
+                  setState(() {
+                    isError = true;
+                    isLoading = false;
+                    error = "Amount should be greater than 0.01 SOL";
+                  });
+                  return;
+                }
+                setState(() {
+                  isError = false;
+                  isLoading = true;
+                });
+              } catch (e) {
+                setState(() {
+                  isError = true;
+                  isLoading = false;
+                  error = "Amount should be greater than 0.01 SOL";
+                });
+              }
             },
             child: Container(
               alignment: Alignment.center,
@@ -130,6 +147,9 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
               ),
             ),
           ),
+          SizedBox(
+            height: 50,
+          ),
           (isLoading)
               ? FutureBuilder(
                   future: verifyAmount(),
@@ -165,6 +185,8 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
 
   Future<bool> verifyAmount() async {
     String username = widget.username;
+    double amount = double.parse(amountFieldController.text);
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString("accessToken");
     if (accessToken == null) {
@@ -177,11 +199,11 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
     }
 
     bool successfulReq = true;
-    var url = HttpManager.getCheckAccountEndpoint();
+    var url = HttpManager.getVerifyAmountEndpoint();
 
     var response = await http.get(url, headers: {
       "Accesstoken": accessToken,
-      "Username": username,
+      "Amount": amount.toStringAsExponential(3),
     }).catchError((error) {
       successfulReq = false;
     });
@@ -194,6 +216,7 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
       return false;
     }
     final body = jsonDecode(response.body);
+
     if (body["message"] == "successful") {
       return true;
     } else {
