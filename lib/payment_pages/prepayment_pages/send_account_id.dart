@@ -7,7 +7,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:blockpay_frontend/model/signinColorPallete.dart';
-import 'package:blockpay_frontend/prepayment_pages/complete_payment.dart';
+import 'package:blockpay_frontend/payment_pages/complete_payment.dart';
 
 class SendAccountIdPage extends StatefulWidget {
   @override

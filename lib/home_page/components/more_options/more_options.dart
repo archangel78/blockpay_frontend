@@ -1,4 +1,4 @@
-import 'package:blockpay_frontend/prepayment_pages/send_account_id.dart';
+import 'package:blockpay_frontend/payment_pages/prepayment_pages/send_account_id.dart';
 import 'package:flutter/material.dart';
 
 class MoreOptions extends StatefulWidget {
