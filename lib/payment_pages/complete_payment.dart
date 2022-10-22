@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:blockpay_frontend/model/signinColorPallete.dart';
+import 'package:blockpay_frontend/payment_pages/do_transaction.dart';
+import 'package:blockpay_frontend/payment_pages/transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_icons/flutter_icons.dart';
@@ -177,8 +179,11 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                CompletePaymentPage(username: widget.username)),
+            builder: (context) => TransactionPage(
+                  fromAccount: "test",
+                  toAccount: widget.username,
+                  amount: amountFieldController.text,
+                )),
       );
     });
   }
