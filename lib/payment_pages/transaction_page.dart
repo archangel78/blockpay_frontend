@@ -3,13 +3,17 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class TransactionPage extends StatelessWidget {
-  String fromAccount, toAccount, amount;
+  String title, time, name, amount, toTitle, toValue, transactionId;
   @override
   TransactionPage(
       {Key? key,
-      required this.fromAccount,
-      required this.toAccount,
-      required this.amount})
+      required this.title,
+      required this.time,
+      required this.name,
+      required this.amount,
+      required this.toTitle,
+      required this.toValue,
+      required this.transactionId})
       : super(key: key);
 
   @override
@@ -27,7 +31,7 @@ class TransactionPage extends StatelessWidget {
           padding: EdgeInsets.all(20),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Color.fromARGB(255, 52, 34, 170)),
+              color: Color.fromARGB(255, 35, 10, 199)),
           child: Column(
             children: [
               Container(
@@ -40,7 +44,7 @@ class TransactionPage extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 child: Text(
-                  "at 12th December 12:50",
+                  "at $time",
                   style: GoogleFonts.cairo(
                     fontSize: 15,
                     color: Colors.white,
@@ -73,7 +77,7 @@ class TransactionPage extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 child: Text(
-                  "Devakrishna C Nair",
+                  name,
                   style: GoogleFonts.cairo(
                       fontSize: 25,
                       color: Colors.white,
@@ -90,11 +94,13 @@ class TransactionPage extends StatelessWidget {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              SizedBox(height: 15,),
+              SizedBox(
+                height: 15,
+              ),
               Container(
                 alignment: Alignment.center,
                 child: Text(
-                  "Account Id: $toAccount",
+                  "$toTitle: $toValue",
                   style: GoogleFonts.cairo(
                     fontSize: 15,
                     color: Colors.white,
@@ -106,7 +112,7 @@ class TransactionPage extends StatelessWidget {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Text(
-                    "Transaction Id: cmFuZG9tIHRyYW5zYWN0aW9uIGlkIGdlbg==",
+                    "Transaction Id: $transactionId",
                     style: GoogleFonts.cairo(
                       fontSize: 15,
                       color: Colors.white,

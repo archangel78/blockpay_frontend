@@ -180,9 +180,13 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
         context,
         MaterialPageRoute(
             builder: (context) => TransactionPage(
-                  fromAccount: "test",
-                  toAccount: widget.username,
+                  title: "Payment Completed",
+                  time: "12th December 12:50",
                   amount: amountFieldController.text,
+                  name: "Devakrishna C Nair",
+                  toTitle: "Account Id",
+                  toValue: widget.username,
+                  transactionId: "cmFuZG9tIHRyYW5zYWN0aW9uIGlkIGdlbg==",
                 )),
       );
     });

@@ -513,12 +513,14 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       return false;
     }
     final body = jsonDecode(response.body);
-    print(body);
     if (body["message"] == "successful") {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       await prefs.setString("accessToken", body["accessToken"]);
       await prefs.setString("refreshToken", body["refreshToken"]);
+      await prefs.setString("walletPrivId", body["walletPrivId"]);
+      await prefs.setString("accountName", body["accountName"]);
+
       return true;
     } else if (body["message"] == "Unauthorized") {
       setState(() {
