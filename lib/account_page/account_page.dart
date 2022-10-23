@@ -10,7 +10,7 @@ class AccountPage extends StatelessWidget {
       child: ElevatedButton(
         child: Text("Log Out"),
         onPressed: () {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => LogOutScreen()),
           );

@@ -47,6 +47,8 @@ dependencies:
   google_fonts: ^3.0.1
   encrypt: ^5.0.1
   intl: ^0.17.0
+  qrscan: ^0.3.3
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:

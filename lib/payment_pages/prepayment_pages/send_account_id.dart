@@ -131,7 +131,7 @@ class _SendAccountIdPageState extends State<SendAccountIdPage> {
 
   goToPostPaymentPage(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) =>

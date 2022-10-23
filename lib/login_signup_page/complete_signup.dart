@@ -169,7 +169,7 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
   goToHomePage(BuildContext context) {
     print("Called");
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => BlockPayHome()),
       );

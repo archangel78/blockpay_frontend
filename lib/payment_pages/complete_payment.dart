@@ -176,7 +176,7 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
 
   goToPaymentCompletionPage(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => DoTransaction(toAccount: widget.username, amount: amountFieldController.text)),

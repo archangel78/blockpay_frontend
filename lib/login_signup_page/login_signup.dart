@@ -397,11 +397,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       }
                       var successfulLogin = await logIn(id, password);
                       if (successfulLogin) {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BlockPayHome()),
-                            ModalRoute.withName("/"));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BlockPayHome()),
+                        );
                       } else {
                         setState(() {
                           isLoginError = true;
