@@ -1,4 +1,5 @@
 import 'package:blockpay_frontend/account_page/account_page.dart';
+import 'package:blockpay_frontend/payment_pages/prepayment_pages/qr_scan.dart';
 import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatelessWidget {
@@ -13,10 +14,20 @@ class HeaderWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CircleAvatar(
-            child: Icon(
-              Icons.center_focus_weak,
-              color: Colors.white,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => QrScanPage(),
+                ),
+              );
+            },
+            child: CircleAvatar(
+              child: Icon(
+                Icons.center_focus_weak,
+                color: Colors.white,
+              ),
             ),
           ),
           GestureDetector(
