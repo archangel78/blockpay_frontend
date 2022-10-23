@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:blockpay_frontend/account_page/account_page.dart';
 import 'package:blockpay_frontend/home_page/components/block_pay_home.dart';
+import 'package:blockpay_frontend/login_signup_page/complete_signup.dart';
 import 'package:blockpay_frontend/main.dart';
 import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   final unameSUpController = TextEditingController();
   final emailSUpController = TextEditingController();
-  final phoneSUController = TextEditingController();
   final passwordSUController = TextEditingController();
 
   final idSiController = TextEditingController();
@@ -100,11 +100,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           AnimatedPositioned(
             duration: Duration(milliseconds: 700),
             curve: Curves.bounceInOut,
-            top: isSignupScreen ? 270 : 300,
+            top: isSignupScreen ? 265 : 300,
             child: AnimatedContainer(
               duration: Duration(milliseconds: 700),
               curve: Curves.bounceInOut,
-              height: isSignupScreen ? 385 : 270,
+              height: isSignupScreen ? 340 : 270,
               padding: EdgeInsets.all(20),
               width: MediaQuery.of(context).size.width - 40,
               margin: EdgeInsets.symmetric(horizontal: 20),
@@ -252,8 +252,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               false, false, unameSUpController),
           buildTextField(MaterialCommunityIcons.email_outline, "email", false,
               true, emailSUpController),
-          buildTextField(MaterialCommunityIcons.phone_outline, "Phone Number",
-              false, true, phoneSUController),
           buildTextField(MaterialCommunityIcons.lock_outline, "password", true,
               false, passwordSUController),
           (isSignUpError)
@@ -321,7 +319,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     return AnimatedPositioned(
       duration: Duration(milliseconds: 700),
       curve: Curves.bounceInOut,
-      top: isSignupScreen ? 645 : 535,
+      top: isSignupScreen ? 575 : 535,
       right: 0,
       left: 0,
       child: Center(
@@ -368,37 +366,26 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                     if (isSignupScreen) {
                       String username = unameSUpController.text;
                       String email = emailSUpController.text;
-                      String phone = phoneSUController.text;
                       String password = passwordSUController.text;
 
                       if (!verifySignUpLength("Username", username, 4) ||
                           !verifySignUpLength("Email", email, 8) ||
-                          !verifySignUpLength("Phone", phone, 8) ||
                           !verifySignUpLength("Password", password, 5)) {
                         return;
                       }
 
-                      var successfulCA =
-                          await createAccount(username, email, phone, password);
-                      if (successfulCA) {
-                        var successfulLogin = await logIn(username, password);
-                        if (successfulLogin) {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BlockPayHome()),
-                              ModalRoute.withName("/"));
-                        } else {
-                          setState(() {
-                            isSignUpError = true;
-                            signUpError = "Some unkown error occurred";
-                          });
-                        }
-                      } else {
-                        setState(() {
-                          isSignUpError = true;
-                          signUpError = "Some unkown error occurred";
-                        });
+                      var successfulPV =
+                          await PreVerifyAccount(username, email, password);
+                      if (successfulPV) {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CompleteSignUp(
+                                      username: unameSUpController.text,
+                                      emailId: emailSUpController.text,
+                                      password: passwordSUController.text,
+                                    )),
+                            ModalRoute.withName("/"));
                       }
                     } else {
                       String id = idSiController.text;
@@ -459,16 +446,15 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     );
   }
 
-  Future<bool> createAccount(
-      String username, String email, String phone, String password) async {
-    var url = HttpManager.getCreateAccountEndpoint();
+  Future<bool> PreVerifyAccount(
+      String username, String email, String password) async {
+    var url = HttpManager.getPreVerifyEndpoint();
     bool successfulReq = true;
+
     var response = await http.post(url, headers: {
-      "accountname": username,
+      "Accountname": username,
       "Emailid": email,
       "password": password,
-      "Phoneno": phone,
-      "Countrycode": "91"
     }).catchError((error) {
       successfulReq = false;
     });
@@ -484,11 +470,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       });
       return false;
     }
-    var loginSuccess = await logIn(username, password);
-    if (loginSuccess) {
-      return true;
-    }
-    return false;
+    return true;
   }
 
   Future<bool> logIn(String id, String password) async {
@@ -520,6 +502,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       await prefs.setString("refreshToken", body["refreshToken"]);
       await prefs.setString("walletPrivId", body["walletPrivId"]);
       await prefs.setString("accountName", body["accountName"]);
+      await prefs.setString("walletPubKey", body["walletPubKey"]);
 
       return true;
     } else if (body["message"] == "Unauthorized") {

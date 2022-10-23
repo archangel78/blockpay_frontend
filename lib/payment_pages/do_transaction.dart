@@ -30,13 +30,17 @@ class _DoTransactionState extends State<DoTransaction> {
                   title: Text("Completing payment"),
                   backgroundColor: Color.fromARGB(255, 18, 6, 92),
                 ),
-                body: CircularProgressIndicator());
+                body: Container(
+                    height: double.infinity,
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator()));
           }
           if (snapshot.hasData && snapshot.data == true) {
             return TransactionPage(
               amount: widget.amount,
               name: "Devakrishna C Nair",
-              time: DateFormat('hh:mm d MMM YY').format(DateTime.now()),
+              time: DateFormat('hh:mm d MMM yyyy').format(DateTime.now()),
               title: "Payment Completed",
               toTitle: "Account Id",
               toValue: widget.toAccount,
@@ -63,7 +67,7 @@ class _DoTransactionState extends State<DoTransaction> {
 
     String prover = privKeyId.substring(0, 5);
     DateTime now = DateTime.now();
-    String formattedDate = DateFormat('hh:mm d MMM YY').format(now);
+    String formattedDate = DateFormat('hh:mm d MMM yyyy').format(now);
 
     var toHashString =
         "{'toAccount': '${widget.toAccount}', 'fromAccount': '$accountName', 'amount': '${widget.amount}', 'prover': '$prover', 'expiryTime': '$formattedDate'}";

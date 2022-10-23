@@ -7,6 +7,10 @@ class HttpManager {
   static String host = "192.168.1.100";
   static String port = "8080";
 
+  static Uri getPreVerifyEndpoint() {
+    return Uri.http("$host:$port", "/pre_signup_verify");
+  }
+
   static Uri getCreateAccountEndpoint() {
     return Uri.http("$host:$port", "/create_account");
   }
