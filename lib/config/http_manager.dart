@@ -39,6 +39,14 @@ class HttpManager {
     return Uri.http("$host:$port", "/create_transaction");
   }
 
+  static Uri getGetBalanceEndpoint() {
+    return Uri.http("$host:$port", "/get_balance");
+  }
+
+  static Uri getTransactionHistoryEndpoint() {
+    return Uri.http("$host:$port", "/get_transaction_history");
+  }
+
   static Future<bool> renewAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString("accessToken");

@@ -29,7 +29,10 @@ class LogOutScreen extends StatelessWidget {
 
   removeJwtTokens() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool succ1 = await prefs.remove("accessToken");
-    bool succ2 = await prefs.remove("refreshToken");
+    await prefs.remove("accessToken");
+    await prefs.remove("refreshToken");
+    await prefs.remove("walletPrivId");
+    await prefs.remove("accountName");
+    await prefs.remove("walletPubKey");
   }
 }

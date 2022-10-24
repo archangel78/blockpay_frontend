@@ -8,6 +8,15 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class TransactionResponse {
+  bool successful;
+  String fullName, transactionId;
+  TransactionResponse(
+      {required this.successful,
+      required this.fullName,
+      required this.transactionId});
+}
+
 class DoTransaction extends StatefulWidget {
   String toAccount, amount;
   @override
@@ -36,16 +45,19 @@ class _DoTransactionState extends State<DoTransaction> {
                     alignment: Alignment.center,
                     child: CircularProgressIndicator()));
           }
-          if (snapshot.hasData && snapshot.data == true) {
-            return TransactionPage(
-              amount: widget.amount,
-              name: "Devakrishna C Nair",
-              time: DateFormat('hh:mm d MMM yyyy').format(DateTime.now()),
-              title: "Payment Completed",
-              toTitle: "Account Id",
-              toValue: widget.toAccount,
-              transactionId: "XIDSISM838LSK2MDIIC8ISLJ2",
-            );
+          TransactionResponse? transactionResponse = snapshot.data;
+          if (snapshot.hasData && transactionResponse != null) {
+            if (snapshot.data?.successful == true) {
+              return TransactionPage(
+                amount: widget.amount,
+                name: transactionResponse.fullName,
+                time: DateFormat('hh:mm d MMM yyyy').format(DateTime.now()),
+                title: "Payment Completed",
+                toTitle: "Account Id",
+                toValue: widget.toAccount.trim(),
+                transactionId: transactionResponse.transactionId,
+              );
+            }
           }
           return Scaffold(
               appBar: AppBar(
@@ -56,21 +68,23 @@ class _DoTransactionState extends State<DoTransaction> {
         });
   }
 
-  Future<bool> doPayment() async {
+  Future<TransactionResponse> doPayment() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString("accessToken");
     String? privKeyId = prefs.getString("walletPrivId");
     String? accountName = prefs.getString("accountName");
     if (accessToken == null || privKeyId == null || accountName == null) {
-      return false;
+      return TransactionResponse(
+          successful: false, fullName: "", transactionId: "");
     }
 
     String prover = privKeyId.substring(0, 5);
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('hh:mm d MMM yyyy').format(now);
+    String trimmedAccountName = widget.toAccount.trim();
 
     var toHashString =
-        "{'toAccount': '${widget.toAccount}', 'fromAccount': '$accountName', 'amount': '${widget.amount}', 'prover': '$prover', 'expiryTime': '$formattedDate'}";
+        "{'toAccount': '${trimmedAccountName}', 'fromAccount': '$accountName', 'amount': '${widget.amount}', 'prover': '$prover', 'expiryTime': '$formattedDate'}";
 
     final key = encrypt.Key.fromUtf8(privKeyId);
     final iv = encrypt.IV.fromSecureRandom(16);
@@ -84,15 +98,19 @@ class _DoTransactionState extends State<DoTransaction> {
       "Transactionkey": encrypted.base16,
       "Iv": iv.base16,
       "Fromaccount": accountName,
-      "Toaccount": widget.toAccount,
+      "Toaccount": widget.toAccount.trim(),
       "Amount": widget.amount
     });
     var body = jsonDecode(response.body);
     print(body);
     if (body["message"] == "successful") {
-      return true;
+      return TransactionResponse(
+          successful: true,
+          fullName: body["name"],
+          transactionId: body["transactionId"]);
     }
-    return false;
+    return TransactionResponse(
+        successful: false, fullName: "", transactionId: "");
   }
 }
 

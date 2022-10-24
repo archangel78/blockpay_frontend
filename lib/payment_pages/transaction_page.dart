@@ -37,7 +37,7 @@ class TransactionPage extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 child: Text(
-                  "Payment Completed",
+                  title,
                   style: GoogleFonts.cairo(fontSize: 22, color: Colors.white),
                 ),
               ),

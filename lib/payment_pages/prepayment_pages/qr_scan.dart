@@ -35,12 +35,11 @@ class _QrScanPageState extends State<QrScanPage> {
               }
               String? val = snapshot.data;
               if (val != null) {
-                if (val.length > 12) {
-                  if (val.substring(0, 9) == "blockpay:") {
-                    String uname = val.substring(9);
-                    goToPostPaymentPage(context, uname);
-                  }
+                if (val.substring(0, 9) == "blockpay:") {
+                  String uname = val.substring(9);
+                  goToPostPaymentPage(context, uname);
                 }
+
                 return Container(
                     alignment: Alignment.center,
                     height: double.infinity,
@@ -72,10 +71,11 @@ class _QrScanPageState extends State<QrScanPage> {
     if (status.isGranted || status.isLimited) {
       String? value = await scanner.scan();
       if (value != null) {
-        bool validQr = await checkAccount(value);
-        print(validQr);
-        if (validQr) {
-          return "blockpay:$value";
+        if (value.length > 12) {
+          bool validQr = await checkAccount(value.substring(9));
+          if (validQr) {
+            return value;
+          }
         }
         return "Invalid Qr Code";
       } else {
