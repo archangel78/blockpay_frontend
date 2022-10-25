@@ -462,7 +462,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       return false;
     }
     final body = jsonDecode(response.body);
-    print(body);
     if (body["message"] != "successful") {
       setState(() {
         isSignUpError = true;
@@ -503,7 +502,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       await prefs.setString("walletPrivId", body["walletPrivId"]);
       await prefs.setString("accountName", body["accountName"]);
       await prefs.setString("walletPubKey", body["walletPubKey"]);
-      print(body["walletPubKey"]);
       return true;
     } else if (body["message"] == "Unauthorized") {
       setState(() {

@@ -65,7 +65,6 @@ class AccountPage extends StatelessWidget {
                 onTap: () async {
                   await Clipboard.setData(
                       ClipboardData(text: accountPageData.walletAddress));
-                  print(accountPageData.walletAddress);
                   Fluttertoast.showToast(
                       msg: "Copied Wallet Address",
                       toastLength: Toast.LENGTH_SHORT,

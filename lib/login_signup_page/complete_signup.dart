@@ -149,8 +149,6 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
                     if (snapshot.connectionState != ConnectionState.done) {
                       return CircularProgressIndicator();
                     }
-                    print(snapshot.hasData);
-                    print(snapshot.data);
                     if (snapshot.hasData && snapshot.data == true) {
                       goToHomePage(context);
                     }
@@ -167,7 +165,6 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
   }
 
   goToHomePage(BuildContext context) {
-    print("Called");
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.pushReplacement(
         context,
@@ -194,10 +191,7 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
     if (!successfulReq) {
       return false;
     }
-    final body = jsonDecode(response.body);
-    print(body);
-    print(body["message"]);
-    
+    final body = jsonDecode(response.body);    
     if (body["message"] != "successful") {
       setState(() {
         isError = true;
@@ -206,20 +200,13 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
       });
       return false;
     }
-    print("testing");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var value1 = await prefs.setString("accessToken", body["accessToken"]);
-    print(value1);
     var value2 = await prefs.setString("refreshToken", body["refreshToken"]);
-    print(value2);
     var value3 = await prefs.setString("walletPrivId", body["walletPrivId"]);
-    print(value3);
     var value4 = await prefs.setString("accountName", body["accountName"]);
-    print(value4);
     var value5 = await prefs.setString("walletAddress", body["walletAddress"]);
-    print(value5);
-    print("test");
     return true;
   }
 

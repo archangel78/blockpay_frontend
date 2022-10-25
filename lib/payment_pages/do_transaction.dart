@@ -102,7 +102,6 @@ class _DoTransactionState extends State<DoTransaction> {
       "Amount": widget.amount
     });
     var body = jsonDecode(response.body);
-    print(body);
     if (body["message"] == "successful") {
       return TransactionResponse(
           successful: true,

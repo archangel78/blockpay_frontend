@@ -69,9 +69,6 @@ class HeaderWidget extends StatelessWidget {
     String? accessToken = prefs.getString("accessToken");
     String? accountName = prefs.getString("accountName");
     String? walletAddress = prefs.getString("walletPubKey");
-    print(accessToken);
-    print(accountName);
-    print(walletAddress);
     if (accountName == null || walletAddress == null || accessToken == null) {
       return AccountPageData(accountName: "", walletAddress: "", balance: "");
     }

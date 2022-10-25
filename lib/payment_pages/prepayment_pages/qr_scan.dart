@@ -116,7 +116,6 @@ class _QrScanPageState extends State<QrScanPage> {
       return false;
     }
     final body = jsonDecode(response.body);
-    print(body);
     if (body["message"] == "successful") {
       return true;
     }
