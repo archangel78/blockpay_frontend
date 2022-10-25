@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:blockpay_frontend/home_page/components/invite_components/invite_section.dart';
 import 'package:blockpay_frontend/home_page/components/more_options/more_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'separator.dart';
 import 'package:flutter/material.dart';
 import 'user_components/load_more.dart';
@@ -98,5 +99,14 @@ class _BlockPayHomeState extends State<BlockPayHome> {
         ),
       ),
     );
+  }
+
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? username = await prefs.getString("accountName");
+    if (username != null) {
+      return username;
+    }
+    return "";
   }
 }

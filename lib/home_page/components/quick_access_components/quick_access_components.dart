@@ -1,5 +1,7 @@
+import 'package:blockpay_frontend/account_page/transaction_history.dart';
 import 'package:blockpay_frontend/payment_pages/prepayment_pages/qr_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuickAccess extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class _QuickAccessState extends State<QuickAccess> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           GestureDetector(
             onTap: () {
@@ -72,26 +75,52 @@ class _QuickAccessState extends State<QuickAccess> {
               )
             ],
           ),
-          Column(
-            children: [
-              CircleAvatar(
-                child: Container(
-                  child: Image.asset("assets/icons/history.png"),
-                  height: 38,
-                  width: 38,
+          GestureDetector(
+            onTap: (() async {
+              String username = await getUsername();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => Scaffold(
+                          appBar: AppBar(
+                            title: Text("Transaction History"),
+                            backgroundColor: Color.fromARGB(255, 18, 6, 92),
+                          ),
+                          body: TransactionHistory(
+                            username: username,
+                          )),
+                    ),
+                  );
+            }),
+            child: Column(
+              children: [
+                CircleAvatar(
+                  child: Container(
+                    child: Image.asset("assets/icons/history.png"),
+                    height: 38,
+                    width: 38,
+                  ),
+                  backgroundColor: Color.fromARGB(255, 18, 6, 92),
+                  minRadius: 35.0,
                 ),
-                backgroundColor: Color.fromARGB(255, 18, 6, 92),
-                minRadius: 35.0,
-              ),
-              Text(
-                "History",
-                style: TextStyle(color: Colors.white),
-              )
-            ],
+                Text(
+                  "History",
+                  style: TextStyle(color: Colors.white),
+                )
+              ],
+            ),
           ),
         ],
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       ),
     );
+  }
+
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? username = await prefs.getString("accountName");
+    if (username != null) {
+      return username;
+    }
+    return "";
   }
 }

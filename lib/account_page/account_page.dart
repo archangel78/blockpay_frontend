@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:blockpay_frontend/account_page/transaction_history.dart';
 import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:blockpay_frontend/home_page/components/header_components/header_widget.dart';
 import 'package:blockpay_frontend/payment_pages/transaction_page.dart';
@@ -117,145 +118,11 @@ class AccountPage extends StatelessWidget {
                   ],
                 ),
               ),
-              FutureBuilder(
-                  future: getTransactions(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState != ConnectionState.done) {
-                      return Container(
-                          alignment: Alignment.center,
-                          height: 80,
-                          width: 80,
-                          child: CircularProgressIndicator());
-                    }
-                    List? transactions = snapshot.data;
-
-                    if (snapshot.hasData && transactions != null) {
-                      return (transactions.length == 0)
-                          ? Container(
-                              padding: EdgeInsets.all(20),
-                              child: Text(
-                                "No transactions found",
-                                style: TextStyle(fontSize: 20),
-                              ))
-                          : SingleChildScrollView(
-                              child: ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: transactions.length,
-                                  padding: EdgeInsets.all(10),
-                                  itemBuilder: (context, index) {
-                                    var transaction = transactions[index];
-                                    bool debited =
-                                        (transaction["fromAccount"] ==
-                                            accountPageData.accountName);
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute<void>(
-                                            builder: (BuildContext context) =>
-                                                TransactionPage(
-                                                    amount: transaction[
-                                                        "transactionAmount"],
-                                                    name: (debited)
-                                                        ? "${transaction["name"]}"
-                                                        : "${transaction["fromName"]}",
-                                                    time: transaction["ts"],
-                                                    title: (debited)?"Payment Completed":"Payment Received",
-                                                    toTitle: "Account Id",
-                                                    toValue: (debited)
-                                                        ? "${transaction["toAccount"]}"
-                                                        : "${transaction["fromAccount"]}",
-                                                    transactionId: transaction[
-                                                        "transactionId"]),
-                                          ),
-                                        );
-                                      },
-                                      child: Card(
-                                        child: Container(
-                                            height: 100,
-                                            width: double.infinity,
-                                            padding: EdgeInsets.all(15),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      (debited)
-                                                          ? "Money sent to "
-                                                          : "Money received from ",
-                                                      style: GoogleFonts.cairo(
-                                                          fontSize: 15),
-                                                    ),
-                                                    Container(
-                                                      alignment:
-                                                          Alignment.bottomLeft,
-                                                      child: Text(
-                                                        (debited)
-                                                            ? "${transaction["name"]}"
-                                                            : "${transaction["fromName"]}",
-                                                        style:
-                                                            GoogleFonts.cairo(
-                                                                fontSize: 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Text(
-                                                  transaction[
-                                                          "transactionAmount"] +
-                                                      " SOL",
-                                                  style: GoogleFonts.cairo(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              ],
-                                            )),
-                                        color: (debited)
-                                            ? Color.fromARGB(255, 237, 194, 194)
-                                            : Color.fromARGB(
-                                                255, 199, 247, 211),
-                                      ),
-                                    );
-                                  }),
-                            );
-                    }
-                    return Text("Could not fetch previous transactons");
-                  })
+              TransactionHistory(username: accountPageData.accountName)
             ],
           ),
         ),
       ),
     );
-  }
-
-  Future<List> getTransactions() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? accessToken = prefs.getString("accessToken");
-    if (accessToken == null) {
-      return [];
-    }
-    bool successfulReq = true;
-    var url = HttpManager.getTransactionHistoryEndpoint();
-    var response = await http
-        .get(url, headers: {"accessToken": accessToken}).catchError((error) {
-      successfulReq = false;
-    });
-
-    if (!successfulReq) {
-      return [];
-    }
-    var body = jsonDecode(response.body);
-    if (body["message"] != "successful") {
-      return [];
-    }
-    return body["transactions"];
   }
 }

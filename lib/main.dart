@@ -1,6 +1,5 @@
 import 'package:blockpay_frontend/home_page/components/block_pay_home.dart';
 import 'package:flutter/material.dart';
-
 import 'login_signup_page/login_signup.dart';
 import 'package:blockpay_frontend/config/http_manager.dart';
 

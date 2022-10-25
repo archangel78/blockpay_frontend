@@ -1,5 +1,9 @@
 import 'package:blockpay_frontend/payment_pages/prepayment_pages/send_account_id.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dash/flutter_dash.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MoreOptions extends StatefulWidget {
   @override
@@ -12,6 +16,7 @@ class _MoreOptionsState extends State<MoreOptions> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Column(
             children: [
@@ -87,30 +92,96 @@ class _MoreOptionsState extends State<MoreOptions> {
               )
             ],
           ),
-          Column(
-            children: [
-              Icon(
-                Icons.qr_code,
-                color: Color.fromARGB(255, 22, 83, 205),
-                size: 45,
-              ),
-              Column(
-                children: [
-                  Text(
-                    "Show my",
-                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+          GestureDetector(
+            onTap: () async {
+              String username = await getUsername();
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => Scaffold(
+                    appBar: AppBar(
+                      title: Text("Scan to Pay Me"),
+                      backgroundColor: Color.fromARGB(255, 18, 6, 92),
+                    ),
+                    body: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 300,
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(15),
+                          child: QrImage(
+                            data: "blockpay:$username",
+                            version: QrVersions.auto,
+                            size: 260,
+                            gapless: true,
+                            foregroundColor:
+                                const Color.fromARGB(255, 30, 3, 30),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            "Your Payment QR",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Dash(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Account ID: ${username}",
+                          style: GoogleFonts.cairo(fontSize: 20),
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    "QR",
-                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                  ),
-                ],
-              )
-            ],
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Icon(
+                  Icons.qr_code,
+                  color: Color.fromARGB(255, 22, 83, 205),
+                  size: 45,
+                ),
+                Column(
+                  children: [
+                    Text(
+                      "Show my",
+                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                    ),
+                    Text(
+                      "QR",
+                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ],
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       ),
     );
+  }
+
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? username = await prefs.getString("accountName");
+    if (username != null) {
+      return username;
+    }
+    return "";
   }
 }
