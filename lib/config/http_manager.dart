@@ -47,6 +47,10 @@ class HttpManager {
     return Uri.http("$host:$port", "/get_transaction_history");
   }
 
+    static Uri getContactsEndpoint() {
+    return Uri.http("$host:$port", "/get_contacts");
+  }
+
   static Future<bool> renewAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString("accessToken");

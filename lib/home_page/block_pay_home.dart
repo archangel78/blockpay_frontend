@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:typed_data';
-import 'dart:math' as math;
+import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:blockpay_frontend/home_page/components/invite_section.dart';
 import 'package:blockpay_frontend/home_page/components/more_options.dart';
 import 'package:contacts_service/contacts_service.dart';
@@ -11,6 +12,7 @@ import 'components/people_details.dart';
 import 'components/account_info.dart';
 import 'components/header_widget.dart';
 import 'components/text_header.dart';
+import 'package:http/http.dart' as http;
 import 'components/scroll_handle.dart';
 import 'package:blockpay_frontend/home_page/components/quick_access_components.dart';
 
@@ -194,7 +196,7 @@ class _BlockPayHomeState extends State<BlockPayHome> {
     List<Contact> contacts =
         await ContactsService.getContacts(withThumbnails: false);
     List<ContactsValues> contactValues = [];
-    Set<String> contactNames = Set();
+    Set<String> contactNumbers = Set();
 
     for (int i = 0; i < contacts.length; i++) {
       var phones = contacts[i].phones;
@@ -209,7 +211,7 @@ class _BlockPayHomeState extends State<BlockPayHome> {
             if (name.length > 8) {
               name = "${name.substring(0, 8)}...";
             }
-            if (!contactNames.contains(name)) {
+            if (!contactNumbers.contains(phoneNo)) {
               var nameParts = name.split(" ");
               if (nameParts.length > 0) {
                 String initals = nameParts[0][0];
@@ -218,7 +220,7 @@ class _BlockPayHomeState extends State<BlockPayHome> {
                 }
                 Color color = allColors[colorIndex % (allColors.length)];
                 colorIndex++;
-                contactNames.add(name);
+                contactNumbers.add(phoneNo);
                 contactValues.add(ContactsValues(
                     name: name,
                     phoneNo: phoneNo,
@@ -230,6 +232,22 @@ class _BlockPayHomeState extends State<BlockPayHome> {
         }
       }
     }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? accessToken = prefs.getString("accessToken");
+    if (accessToken == null) {
+      return contactValues;
+    }
+    var contactJson = jsonEncode(contactNumbers.toList());
+
+    bool successfulReq = true;
+    var url = HttpManager.getContactsEndpoint();
+    var response = await http
+        .post(url, headers: {"accessToken": accessToken}, body: contactJson)
+        .catchError((error) {
+      successfulReq = false;
+    });
+    print(response.body);
+
     return contactValues;
   }
 }
