@@ -47,14 +47,11 @@ class HeaderWidget extends StatelessWidget {
             child: CircleAvatar(
               child: Icon(Icons.people),
             ),
-            onTap: () async {
-              AccountPageData accountPageData = await getAccountPageData();
+            onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute<void>(
-                  builder: (BuildContext context) => AccountPage(
-                    accountPageData: accountPageData,
-                  ),
+                  builder: (BuildContext context) => AccountPage(),
                 ),
               );
             },
@@ -62,34 +59,5 @@ class HeaderWidget extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<AccountPageData> getAccountPageData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? accessToken = prefs.getString("accessToken");
-    String? accountName = prefs.getString("accountName");
-    String? walletAddress = prefs.getString("walletPubKey");
-    if (accountName == null || walletAddress == null || accessToken == null) {
-      return AccountPageData(accountName: "", walletAddress: "", balance: "");
-    }
-    bool successfulReq = true;
-    var url = HttpManager.getGetBalanceEndpoint();
-    var response = await http
-        .get(url, headers: {"accessToken": accessToken}).catchError((error) {
-      successfulReq = false;
-    });
-
-    if (!successfulReq) {
-      return AccountPageData(accountName: "", walletAddress: "", balance: "");
-    }
-
-    var body = jsonDecode(response.body);
-    if (body["message"] != "successful") {
-      return AccountPageData(accountName: "", walletAddress: "", balance: "");
-    }
-
-    AccountPageData accountPageData =
-        AccountPageData(accountName: accountName, walletAddress: walletAddress, balance: body["balance"]);
-    return accountPageData;
   }
 }

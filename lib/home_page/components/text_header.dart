@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-class AccountHeader extends StatelessWidget {
+class TextHeader extends StatelessWidget {
+  String headerValue;
+  TextHeader({required this.headerValue});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -8,7 +10,7 @@ class AccountHeader extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            "Account Info",
+            headerValue,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,

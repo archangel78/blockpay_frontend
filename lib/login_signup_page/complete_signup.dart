@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:blockpay_frontend/config/http_manager.dart';
-import 'package:blockpay_frontend/home_page/components/block_pay_home.dart';
+import 'package:blockpay_frontend/home_page/block_pay_home.dart';
 import 'package:blockpay_frontend/model/signinColorPallete.dart';
 import 'package:blockpay_frontend/payment_pages/do_transaction.dart';
 import 'package:blockpay_frontend/payment_pages/transaction_page.dart';

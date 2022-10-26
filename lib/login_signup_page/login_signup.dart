@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:blockpay_frontend/account_page/account_page.dart';
-import 'package:blockpay_frontend/home_page/components/block_pay_home.dart';
+import 'package:blockpay_frontend/home_page/block_pay_home.dart';
 import 'package:blockpay_frontend/login_signup_page/complete_signup.dart';
 import 'package:blockpay_frontend/main.dart';
 import 'package:blockpay_frontend/config/http_manager.dart';

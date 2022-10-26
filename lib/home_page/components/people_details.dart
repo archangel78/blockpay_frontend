@@ -1,4 +1,4 @@
-import 'package:blockpay_frontend/home_page/components/block_pay_home.dart';
+import 'package:blockpay_frontend/home_page/block_pay_home.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:dashed_circle/dashed_circle.dart';
 import 'dart:math' as math;

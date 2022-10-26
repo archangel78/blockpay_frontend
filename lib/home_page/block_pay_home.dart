@@ -1,20 +1,18 @@
 import 'dart:typed_data';
 import 'dart:math' as math;
-import 'package:blockpay_frontend/home_page/components/invite_components/invite_section.dart';
-import 'package:blockpay_frontend/home_page/components/more_options/more_options.dart';
+import 'package:blockpay_frontend/home_page/components/invite_section.dart';
+import 'package:blockpay_frontend/home_page/components/more_options.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'separator.dart';
+import 'components/separator.dart';
 import 'package:flutter/material.dart';
-import 'user_components/people_details.dart';
-import 'cash_components/cash_utils.dart';
-import 'header_components/header_widget.dart';
-import 'header_components/people_header.dart';
-import 'header_components/account_header.dart';
-import 'header_components/scroll_handle.dart';
-import 'header_components/more_options_header.dart';
-import 'package:blockpay_frontend/home_page/components/quick_access_components/quick_access_components.dart';
+import 'components/people_details.dart';
+import 'components/account_info.dart';
+import 'components/header_widget.dart';
+import 'components/text_header.dart';
+import 'components/scroll_handle.dart';
+import 'package:blockpay_frontend/home_page/components/quick_access_components.dart';
 
 class ContactsValues {
   String phoneNo, name, initals;
@@ -116,7 +114,7 @@ class _BlockPayHomeState extends State<BlockPayHome> {
                                   SizedBox(height: 12),
                                   ScrollHandle(),
                                   SizedBox(height: 20),
-                                  PeopleHeader(),
+                                  TextHeader(headerValue: "People"),
                                   SizedBox(height: 20),
                                   FutureBuilder(
                                       future: contacts,
@@ -139,7 +137,7 @@ class _BlockPayHomeState extends State<BlockPayHome> {
                                   SizedBox(height: 30),
                                   Separator(),
                                   SizedBox(height: 30),
-                                  MoreHeader(),
+                                  TextHeader(headerValue: "More Options"),
                                   SizedBox(
                                     height: 20,
                                   ),
@@ -149,9 +147,9 @@ class _BlockPayHomeState extends State<BlockPayHome> {
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  AccountHeader(),
+                                  TextHeader(headerValue: "Account Info"),
                                   SizedBox(height: 30),
-                                  CashUtils(),
+                                  AccountInfo(),
                                   SizedBox(height: 30),
                                   InviteSection(),
                                   SizedBox(

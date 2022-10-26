@@ -1,7 +1,6 @@
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:blockpay_frontend/model/userModel.dart';
 
 class UserDetails extends StatefulWidget {
   final ScrollController controller;
