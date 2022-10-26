@@ -67,7 +67,7 @@ class _QrScanPageState extends State<QrScanPage> {
   }
 
   Future<String> scanQr() async {
-    var status = await Permission.camera.status;
+    var status = await Permission.camera.request();
     if (status.isGranted || status.isLimited) {
       String? value = await scanner.scan();
       if (value != null) {
