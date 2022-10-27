@@ -1,4 +1,5 @@
 import 'package:blockpay_frontend/home_page/block_pay_home.dart';
+import 'package:blockpay_frontend/send_to_contact_page/check_contact.dart';
 import 'package:dashed_circle/dashed_circle.dart';
 import 'package:flutter/material.dart';
 
@@ -24,14 +25,25 @@ class PeopleDetails extends StatelessWidget {
               return GridTile(
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      child: Text(
-                        contacts[i].initals,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
+                    InkWell(
+                      onTap: (() {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                CheckContact(phoneNo: contacts[i].phoneNo),
+                          ),
+                        );
+                      }),
+                      child: CircleAvatar(
+                        child: Text(
+                          contacts[i].initals,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        radius: 27,
+                        backgroundColor: contacts[i].color,
                       ),
-                      radius: 27,
-                      backgroundColor: contacts[i].color,
                     ),
                     SizedBox(height: 2),
                     Text(
@@ -70,21 +82,35 @@ class PeopleDetails extends StatelessWidget {
                                 color: Colors.grey,
                                 child: Padding(
                                   padding: EdgeInsets.all(3),
-                                  child: CircleAvatar(
-                                    child: Text(
-                                      contacts[index+8].initals,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20),
+                                  child: InkWell(
+                                    onTap: (() {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute<void>(
+                                          builder: (BuildContext context) =>
+                                              CheckContact(
+                                                  phoneNo: contacts[index + 8]
+                                                      .phoneNo),
+                                        ),
+                                      );
+                                    }),
+                                    child: CircleAvatar(
+                                      child: Text(
+                                        contacts[index + 8].initals,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      radius: 27,
+                                      backgroundColor:
+                                          contacts[index + 8].color,
                                     ),
-                                    radius: 27,
-                                    backgroundColor: contacts[index+8].color,
                                   ),
                                 ),
                               ),
                               SizedBox(height: 2),
                               Text(
-                                contacts[index+8].name,
+                                contacts[index + 8].name,
                                 style: TextStyle(
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w500,
@@ -106,7 +132,7 @@ class PeopleDetails extends StatelessWidget {
                           CircleAvatar(
                             radius: 30,
                             child: Icon(
-                              Icons.keyboard_arrow_down,
+                              Icons.keyboard_arrow_right,
                               size: 50,
                               color: Colors.black,
                             ),

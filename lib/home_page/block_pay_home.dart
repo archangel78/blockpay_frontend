@@ -18,12 +18,12 @@ import 'package:blockpay_frontend/home_page/components/quick_access_components.d
 
 class ContactsValues {
   String phoneNo, name, initals;
-  Color color;
-  ContactsValues(
-      {required this.phoneNo,
-      required this.name,
-      required this.initals,
-      required this.color});
+  late Color color;
+  ContactsValues({
+    required this.phoneNo,
+    required this.name,
+    required this.initals,
+  });
 }
 
 class BlockPayHome extends StatefulWidget {
@@ -218,14 +218,12 @@ class _BlockPayHomeState extends State<BlockPayHome> {
                 if (nameParts.length > 1) {
                   initals += nameParts[1][0];
                 }
-                Color color = allColors[colorIndex % (allColors.length)];
-                colorIndex++;
                 contactNumbers.add(phoneNo);
                 contactValues.add(ContactsValues(
-                    name: name,
-                    phoneNo: phoneNo,
-                    initals: initals,
-                    color: color));
+                  name: name,
+                  phoneNo: phoneNo,
+                  initals: initals,
+                ));
               }
             }
           }
@@ -246,8 +244,27 @@ class _BlockPayHomeState extends State<BlockPayHome> {
         .catchError((error) {
       successfulReq = false;
     });
-    print(response.body);
+    if (!successfulReq) {
+      return contactValues;
+    }
 
-    return contactValues;
+    var body = jsonDecode(response.body);
+    if (body["message"] != "successful") {
+      return contactValues;
+    }
+
+    var indices = jsonDecode(body["indices"]);
+    List<ContactsValues> orderedContactValues = [];
+
+    for (int i = 0; i < indices.length; i++) {
+      orderedContactValues.add(contactValues[indices[i]]);
+    }
+
+    for (int i = 0; i < orderedContactValues.length; i++) {
+      Color color = allColors[colorIndex % (allColors.length)];
+      colorIndex++;
+      orderedContactValues[i].color = color;
+    }
+    return orderedContactValues;
   }
 }

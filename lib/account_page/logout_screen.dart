@@ -13,7 +13,7 @@ class LogOutScreen extends StatelessWidget {
             return CircularProgressIndicator();
           }
           goToLoginPage(context);
-          return Text("Signing out");
+          return Scaffold(body: Text("Signing out"));
         });
   }
 
@@ -21,8 +21,7 @@ class LogOutScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (context) => LoginSignupScreen()),
+          MaterialPageRoute(builder: (context) => LoginSignupScreen()),
           ModalRoute.withName("/"));
     });
   }
