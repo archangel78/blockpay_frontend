@@ -8,24 +8,25 @@ import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:blockpay_frontend/model/signinColorPallete.dart';
 import 'package:blockpay_frontend/payment_pages/complete_payment.dart';
 
-class SendAccountIdPage extends StatefulWidget {
+class SendPhoneNumberPage extends StatefulWidget {
   @override
-  State<SendAccountIdPage> createState() => _SendAccountIdPageState();
+  State<SendPhoneNumberPage> createState() => _SendPhoneNumberPageState();
 }
 
-class _SendAccountIdPageState extends State<SendAccountIdPage> {
-  final accountIdController = TextEditingController();
+class _SendPhoneNumberPageState extends State<SendPhoneNumberPage> {
+  final phoneNumberController = TextEditingController();
 
   bool isError = false;
-  String error = "Username does not exist";
+  String error = "Phone number does not have an account";
   String fullName = "";
+  String accountId = "";
   bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Send to Account Id"),
+        title: Text("Send to Phone Number"),
         backgroundColor: Color.fromARGB(255, 18, 6, 92),
       ),
       body: SingleChildScrollView(
@@ -36,12 +37,16 @@ class _SendAccountIdPageState extends State<SendAccountIdPage> {
               padding: EdgeInsets.all(10),
               alignment: Alignment.bottomLeft,
               child: Text(
-                "Enter the Account Id to send money to",
+                "Enter the Phone number",
                 style: GoogleFonts.cairo(fontSize: 20),
               ),
             ),
-            buildTextField(MaterialCommunityIcons.account,
-                "Account Id or Username", false, false, accountIdController),
+            buildTextField(
+                MaterialCommunityIcons.account,
+                "Phone number without country code",
+                false,
+                false,
+                phoneNumberController),
             (isError)
                 ? Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -135,7 +140,7 @@ class _SendAccountIdPageState extends State<SendAccountIdPage> {
         context,
         MaterialPageRoute(
             builder: (context) => CompletePaymentPage(
-                  username: accountIdController.text,
+                  username: accountId,
                   fullName: fullName,
                 )),
       );
@@ -172,7 +177,7 @@ class _SendAccountIdPageState extends State<SendAccountIdPage> {
   }
 
   Future<bool> checkAccount() async {
-    String username = accountIdController.text;
+    String phoneNo = phoneNumberController.text;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = await prefs.getString("accessToken");
     if (accessToken == null) {
@@ -185,11 +190,11 @@ class _SendAccountIdPageState extends State<SendAccountIdPage> {
     }
 
     bool successfulReq = true;
-    var url = HttpManager.getCheckAccountEndpoint();
+    var url = HttpManager.getCheckPhoneEndpoint();
 
     var response = await http.get(url, headers: {
       "Accesstoken": accessToken,
-      "Username": username,
+      "Phoneno": phoneNo,
     }).catchError((error) {
       successfulReq = false;
     });
@@ -204,6 +209,7 @@ class _SendAccountIdPageState extends State<SendAccountIdPage> {
     final body = jsonDecode(response.body);
     if (body["message"] == "successful") {
       fullName = body["fullName"];
+      accountId = body["username"];
       return true;
     } else {
       setState(() {

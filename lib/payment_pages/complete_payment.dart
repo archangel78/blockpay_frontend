@@ -10,9 +10,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CompletePaymentPage extends StatefulWidget {
-  final String username;
+  final String username, fullName;
   @override
-  const CompletePaymentPage({Key? key, required this.username})
+  const CompletePaymentPage({Key? key, required this.username, required this.fullName})
       : super(key: key);
 
   State<CompletePaymentPage> createState() => _CompletePaymentPageState();
@@ -75,7 +75,7 @@ class _CompletePaymentPageState extends State<CompletePaymentPage> {
           Container(
             alignment: Alignment.center,
             child: Text(
-              widget.username,
+              widget.fullName,
               style:
                   GoogleFonts.robotoCondensed(fontSize: 32, color: Colors.blue),
             ),

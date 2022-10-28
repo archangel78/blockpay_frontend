@@ -15,6 +15,7 @@ class QrScanPage extends StatefulWidget {
 }
 
 class _QrScanPageState extends State<QrScanPage> {
+  String fullName = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,7 +92,7 @@ class _QrScanPageState extends State<QrScanPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => CompletePaymentPage(username: uname)),
+            builder: (context) => CompletePaymentPage(username: uname, fullName: fullName,)),
       );
     });
   }
@@ -117,6 +118,7 @@ class _QrScanPageState extends State<QrScanPage> {
     }
     final body = jsonDecode(response.body);
     if (body["message"] == "successful") {
+      fullName = body["fullName"];
       return true;
     }
     return false;

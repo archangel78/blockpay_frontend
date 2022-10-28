@@ -1,4 +1,5 @@
 import 'package:blockpay_frontend/payment_pages/prepayment_pages/send_account_id.dart';
+import 'package:blockpay_frontend/payment_pages/prepayment_pages/send_to_phone.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -71,26 +72,36 @@ class _MoreOptionsState extends State<MoreOptions> {
               ],
             ),
           ),
-          Column(
-            children: [
-              Icon(
-                Icons.phone,
-                color: Color.fromARGB(255, 22, 83, 205),
-                size: 45,
-              ),
-              Column(
-                children: [
-                  Text(
-                    "Send to",
-                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                  ),
-                  Text(
-                    "Phone No",
-                    style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                  ),
-                ],
-              )
-            ],
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => SendPhoneNumberPage(),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Icon(
+                  Icons.phone,
+                  color: Color.fromARGB(255, 22, 83, 205),
+                  size: 45,
+                ),
+                Column(
+                  children: [
+                    Text(
+                      "Send to",
+                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                    ),
+                    Text(
+                      "Phone No",
+                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
           GestureDetector(
             onTap: () async {

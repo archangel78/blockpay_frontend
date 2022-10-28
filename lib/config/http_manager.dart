@@ -31,6 +31,10 @@ class HttpManager {
     return Uri.http("$host:$port", "/check_account");
   }
 
+  static Uri getCheckPhoneEndpoint() {
+    return Uri.http("$host:$port", "/check_phone");
+  }
+
   static Uri getVerifyAmountEndpoint() {
     return Uri.http("$host:$port", "/verify_send_amount");
   }
@@ -47,8 +51,12 @@ class HttpManager {
     return Uri.http("$host:$port", "/get_transaction_history");
   }
 
-    static Uri getContactsEndpoint() {
+  static Uri getContactsEndpoint() {
     return Uri.http("$host:$port", "/get_contacts");
+  }
+
+  static Uri getVerifyPhoneEndpoint() {
+    return Uri.http("$host:$port", "/verify_phoneno");
   }
 
   static Future<bool> renewAccessToken() async {

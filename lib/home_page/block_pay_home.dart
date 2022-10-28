@@ -18,7 +18,7 @@ import 'package:blockpay_frontend/home_page/components/quick_access_components.d
 
 class ContactsValues {
   String phoneNo, name, initals;
-  late Color color;
+  Color? color;
   ContactsValues({
     required this.phoneNo,
     required this.name,
@@ -32,12 +32,12 @@ class BlockPayHome extends StatefulWidget {
 }
 
 class _BlockPayHomeState extends State<BlockPayHome> {
-  late Future<List<ContactsValues>> contacts;
+  Future<List<ContactsValues>>? contacts;
   List<Color> allColors = [
     Color.fromARGB(255, 212, 7, 7),
     Color.fromARGB(255, 76, 175, 80),
     Color.fromARGB(255, 33, 150, 243),
-    Color.fromARGB(255, 233, 11, 200),
+    Color.fromARGB(255, 11, 200, 233),
     Color.fromARGB(255, 0, 188, 212),
     Color.fromARGB(255, 110, 77, 65),
     Color.fromARGB(255, 101, 55, 180),
@@ -245,11 +245,21 @@ class _BlockPayHomeState extends State<BlockPayHome> {
       successfulReq = false;
     });
     if (!successfulReq) {
+      for (int i = 0; i < contactValues.length; i++) {
+        Color color = allColors[colorIndex % (allColors.length)];
+        colorIndex++;
+        contactValues[i].color = color;
+      }
       return contactValues;
     }
 
     var body = jsonDecode(response.body);
     if (body["message"] != "successful") {
+      for (int i = 0; i < contactValues.length; i++) {
+        Color color = allColors[colorIndex % (allColors.length)];
+        colorIndex++;
+        contactValues[i].color = color;
+      }
       return contactValues;
     }
 
