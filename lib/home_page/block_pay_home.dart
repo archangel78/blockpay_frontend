@@ -19,10 +19,12 @@ import 'package:blockpay_frontend/home_page/components/quick_access_components.d
 class ContactsValues {
   String phoneNo, name, initals;
   Color? color;
+  List<Item> phones;
   ContactsValues({
     required this.phoneNo,
     required this.name,
     required this.initals,
+    required this.phones
   });
 }
 
@@ -49,7 +51,6 @@ class _BlockPayHomeState extends State<BlockPayHome> {
   @override
   void initState() {
     super.initState();
-
     contacts = getContacts();
   }
 
@@ -211,7 +212,8 @@ class _BlockPayHomeState extends State<BlockPayHome> {
             if (name.length > 8) {
               name = "${name.substring(0, 8)}...";
             }
-            if (!contactNumbers.contains(phoneNo)) {
+            List<Item>? phones = contacts[i].phones;
+            if (!contactNumbers.contains(phoneNo) && phones != null) {
               var nameParts = name.split(" ");
               if (nameParts.length > 0) {
                 String initals = nameParts[0][0];
@@ -223,6 +225,7 @@ class _BlockPayHomeState extends State<BlockPayHome> {
                   name: name,
                   phoneNo: phoneNo,
                   initals: initals,
+                  phones: phones
                 ));
               }
             }
