@@ -154,7 +154,6 @@ class _BlockPayHomeState extends State<BlockPayHome> {
                                   SizedBox(height: 30),
                                   AccountInfo(),
                                   SizedBox(height: 30),
-                                  InviteSection(),
                                   SizedBox(
                                     height: 10,
                                   )

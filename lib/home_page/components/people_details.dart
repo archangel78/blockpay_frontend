@@ -1,4 +1,5 @@
 import 'package:blockpay_frontend/home_page/block_pay_home.dart';
+import 'package:blockpay_frontend/payment_pages/prepayment_pages/send_to_contact_page/load_contacts_page.dart';
 import 'package:blockpay_frontend/send_to_contact_page/check_contact.dart';
 import 'package:dashed_circle/dashed_circle.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +127,12 @@ class PeopleDetails extends StatelessWidget {
                 Row(
                   children: [
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute<void>(
+                            builder: (BuildContext context) {
+                          return LoadContactsPage();
+                        }));
+                      },
                       child: Column(
                         children: [
                           CircleAvatar(

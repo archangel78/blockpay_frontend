@@ -1,13 +1,8 @@
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:http/http.dart' as http;
-import 'package:blockpay_frontend/config/http_manager.dart';
 import 'package:blockpay_frontend/home_page/block_pay_home.dart';
 import 'package:blockpay_frontend/payment_pages/prepayment_pages/send_to_contact_page/contact_list.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SendToContactPage extends StatefulWidget {
   List<ContactsValues> contacts;

@@ -68,7 +68,7 @@ class TransactionHistory extends StatelessWidget {
                             },
                             child: Card(
                               child: Container(
-                                  height: 100,
+                                  height: 130,
                                   width: double.infinity,
                                   padding: EdgeInsets.all(15),
                                   child: Row(
@@ -76,6 +76,7 @@ class TransactionHistory extends StatelessWidget {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
                                           Text(
                                             (debited)
@@ -94,6 +95,11 @@ class TransactionHistory extends StatelessWidget {
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold),
                                             ),
+                                          ),
+                                          Text(
+                                            "at ${transaction["ts"]}",
+                                            style:
+                                                GoogleFonts.cairo(fontSize: 15),
                                           ),
                                         ],
                                       ),
