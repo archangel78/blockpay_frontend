@@ -21,6 +21,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   bool isRememberMe = false;
   bool isLoginError = false;
   bool isSignUpError = false;
+  bool isSignUpLoading = false;
   String loginError = "Some error occurred while logging in";
   String signUpError = "Some error occurred while Signing up";
 
@@ -246,42 +247,53 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   Container buildSignupSection() {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      child: Column(
+      child: Stack(
         children: [
-          buildTextField(MaterialCommunityIcons.account_outline, "User Name",
-              false, false, unameSUpController),
-          buildTextField(MaterialCommunityIcons.email_outline, "email", false,
-              true, emailSUpController),
-          buildTextField(MaterialCommunityIcons.lock_outline, "password", true,
-              false, passwordSUController),
-          (isSignUpError)
+          (isSignUpLoading)
               ? Container(
-                  padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    signUpError,
-                    style: TextStyle(color: Colors.red),
-                  ),
-                  alignment: Alignment.topLeft,
-                )
-              : SizedBox(
-                  height: 0,
-                ),
-          Container(
-            width: 200,
-            margin: EdgeInsets.only(top: 15),
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                  text: "By pressing 'Submit' you agree to our ",
-                  style: TextStyle(color: Palette.textColor2),
-                  children: [
-                    TextSpan(
-                      //recognizer: ,
-                      text: "terms & conditions",
-                      style: TextStyle(color: Colors.orange),
+                  height: 80,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator())
+              : SizedBox(),
+          Column(
+            children: [
+              buildTextField(MaterialCommunityIcons.account_outline,
+                  "User Name", false, false, unameSUpController),
+              buildTextField(MaterialCommunityIcons.email_outline, "email",
+                  false, true, emailSUpController),
+              buildTextField(MaterialCommunityIcons.lock_outline, "password",
+                  true, false, passwordSUController),
+              (isSignUpError)
+                  ? Container(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Text(
+                        signUpError,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      alignment: Alignment.topLeft,
+                    )
+                  : SizedBox(
+                      height: 0,
                     ),
-                  ]),
-            ),
+              Container(
+                width: 200,
+                margin: EdgeInsets.only(top: 15),
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      text: "By pressing 'Submit' you agree to our ",
+                      style: TextStyle(color: Palette.textColor2),
+                      children: [
+                        TextSpan(
+                          //recognizer: ,
+                          text: "terms & conditions",
+                          style: TextStyle(color: Colors.orange),
+                        ),
+                      ]),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -374,8 +386,15 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                         return;
                       }
 
+                      setState(() {
+                        isSignUpLoading = true;
+                      });
                       var successfulPV =
                           await PreVerifyAccount(username, email, password);
+                      setState(() {
+                        isSignUpLoading = false;
+                      });
+
                       if (successfulPV) {
                         Navigator.pushAndRemoveUntil(
                             context,
@@ -405,7 +424,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       } else {
                         setState(() {
                           isLoginError = true;
-                          loginError = "Some unkown error occurred";
                         });
                       }
                     }
@@ -504,16 +522,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
       await prefs.setString("walletPubKey", body["walletPubKey"]);
       return true;
     } else if (body["message"] == "Unauthorized") {
-      setState(() {
-        isLoginError = true;
-        loginError = "Invalid Credentials";
-      });
+      loginError = "Invalid Credentials";
       return false;
     } else {
-      setState(() {
-        isLoginError = true;
-        loginError = body["message"];
-      });
+      loginError = body["message"];
       return false;
     }
   }

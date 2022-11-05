@@ -4,7 +4,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HttpManager {
-  static String host = "192.168.1.100";
+  static String host = "43.205.115.87";
   static String port = "8080";
 
   static Uri getPreVerifyEndpoint() {

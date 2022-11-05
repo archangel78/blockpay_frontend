@@ -18,10 +18,10 @@ class BlockPayApp extends StatelessWidget {
             if (snapshot.connectionState != ConnectionState.done) {
               return Scaffold(
                   body: Container(
-                    height: double.infinity,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator()));
+                      height: double.infinity,
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator()));
             }
             if (snapshot.data == "true") {
               return BlockPayHome();

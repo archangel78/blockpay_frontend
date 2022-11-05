@@ -57,6 +57,8 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
           ),
           buildTextField(MaterialCommunityIcons.account, "Your Name", false,
               false, nameFieldController, TextInputType.name),
+          buildUnfocussedTextField(
+              MaterialCommunityIcons.phone, "+91", false, TextInputType.phone),
           buildTextField(MaterialCommunityIcons.phone, "Phone Number", false,
               false, phoneFieldController, TextInputType.phone),
           (isError)
@@ -191,7 +193,7 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
     if (!successfulReq) {
       return false;
     }
-    final body = jsonDecode(response.body);    
+    final body = jsonDecode(response.body);
     if (body["message"] != "successful") {
       setState(() {
         isError = true;
@@ -206,7 +208,7 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
     var value2 = await prefs.setString("refreshToken", body["refreshToken"]);
     var value3 = await prefs.setString("walletPrivId", body["walletPrivId"]);
     var value4 = await prefs.setString("accountName", body["accountName"]);
-    var value5 = await prefs.setString("walletAddress", body["walletAddress"]);
+    var value5 = await prefs.setString("walletPubKey", body["walletAddress"]);
     return true;
   }
 
@@ -218,11 +220,41 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
       TextEditingController controller,
       TextInputType textInputType) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
+      padding: const EdgeInsets.symmetric(
+        vertical: 12.0,
+        horizontal: 15
+      ),
       child: TextField(
         obscureText: isPassword,
         controller: controller,
         keyboardType: textInputType,
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            icon,
+            color: Palette.iconColor,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Palette.textColor1),
+            borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Palette.textColor1),
+            borderRadius: BorderRadius.all(Radius.circular(35.0)),
+          ),
+          contentPadding: EdgeInsets.all(10),
+          hintText: hintText,
+          hintStyle: TextStyle(fontSize: 14, color: Palette.textColor1),
+        ),
+      ),
+    );
+  }
+
+  Widget buildUnfocussedTextField(IconData icon, String hintText, bool isEmail,
+      TextInputType textInputType) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
+      child: TextField(
+        readOnly: true,
         decoration: InputDecoration(
           prefixIcon: Icon(
             icon,

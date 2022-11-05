@@ -167,7 +167,7 @@ class AccountPage extends StatelessWidget {
         .get(url, headers: {"accessToken": accessToken}).catchError((error) {
       successfulReq = false;
     });
-
+    print(response.body);
     if (!successfulReq) {
       return AccountPageData(accountName: "", walletAddress: "", balance: "");
     }
