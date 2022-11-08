@@ -78,6 +78,7 @@ class _QrScanPageState extends State<QrScanPage> {
             return value;
           }
         }
+        print(value);
         return "Invalid Qr Code";
       } else {
         return "No Qr code scanned";
@@ -92,7 +93,10 @@ class _QrScanPageState extends State<QrScanPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => CompletePaymentPage(username: uname, fullName: fullName,)),
+            builder: (context) => CompletePaymentPage(
+                  username: uname,
+                  fullName: fullName,
+                )),
       );
     });
   }

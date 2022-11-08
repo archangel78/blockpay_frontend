@@ -491,6 +491,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
   }
 
   Future<bool> logIn(String id, String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String deviceToken = prefs.getString("notDeviceToken") ?? "None";
+    print(deviceToken);
+    
     var url = HttpManager.getLogInEndpoint();
     bool emailValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -505,6 +509,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     var response = await http.post(url, headers: {
       idName: id,
       "password": password,
+      "deviceToken": deviceToken
     }).catchError((error) {
       successfulReq = false;
     });
@@ -513,8 +518,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     }
     final body = jsonDecode(response.body);
     if (body["message"] == "successful") {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
       await prefs.setString("accessToken", body["accessToken"]);
       await prefs.setString("refreshToken", body["refreshToken"]);
       await prefs.setString("walletPrivId", body["walletPrivId"]);

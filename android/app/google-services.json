@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "264299772877",
+    "project_id": "blockpay-74134",
+    "storage_bucket": "blockpay-74134.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264299772877:android:3a94456aea774509692284",
+        "android_client_info": {
+          "package_name": "com.example.blockpay_frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264299772877-vmfnfd396u5oeglbsats1s1i945qis2n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0SqglzvqSzTtBnBUhazu-nfnbG-8foME"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264299772877-vmfnfd396u5oeglbsats1s1i945qis2n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
