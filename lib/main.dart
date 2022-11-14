@@ -15,10 +15,6 @@ void main() {
 List<String> getSplitMessage(String s1, String s2) {
   int idx = s1.indexOf(s2);
   List<String> parts = s1.split(s2);
-  // List<String> parts = [
-  //   s1.substring(0, idx).trim(),
-  //   s1.substring(idx + 1).trim()
-  // ];
   return parts;
 }
 
@@ -29,10 +25,6 @@ class BlockPayApp extends StatefulWidget {
 
 @pragma('vm:entry-point')
 void backgroundNotificationListener(Map<String, dynamic> data) {
-  // Print notification payload data
-  print('Received notification: $data');
-
-  // Attempt to extract the "message" property from the payload
   String messageText = data['message'] ?? "NULL";
   List<String> splitMessage = getSplitMessage(messageText, ":");
   print(splitMessage);
@@ -41,11 +33,8 @@ void backgroundNotificationListener(Map<String, dynamic> data) {
     String notificationTitle = splitMessage[0];
     String notificationText = splitMessage[1];
 
-    // Android: Displays a system notification
-    // iOS: Displays an alert dialog
     Pushy.notify(notificationTitle, notificationText, data);
 
-    // Clear iOS app badge number
     Pushy.clearBadge();
   }
 }
@@ -60,59 +49,37 @@ class _BlockPayAppState extends State<BlockPayApp> {
     initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method
   Future<void> initPlatformState() async {
-    // Start the Pushy service
     Pushy.listen();
     Pushy.setNotificationIcon('icon.png');
-
-    // Enable FCM Fallback Delivery
     Pushy.toggleFCM(true);
 
     try {
-      // Register the device for push notifications
       String deviceToken = await Pushy.register();
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString("notDeviceToken", deviceToken);
-      // Print token to console/logcat
-      print('Device token: $deviceToken');
 
-      // Send the token to your backend server
-      // ...
-
-      // Update UI with token
       setState(() {
         _deviceToken = deviceToken;
         _instruction =
             Platform.isAndroid ? '(copy from logcat)' : '(copy from console)';
       });
     } on PlatformException catch (error) {
-      // Print to console/logcat
-      print('Error: ${error.message}');
 
-      // Show error
       setState(() {
         _deviceToken = 'Registration failed';
-        _instruction = '(restart app to try again)';
       });
     }
 
-    // Enable in-app notification banners (iOS 10+)
     Pushy.toggleInAppBanner(true);
-
-    // Listen for push notifications received
     Pushy.setNotificationListener(backgroundNotificationListener);
 
-    // Listen for push notification clicked
     Pushy.setNotificationClickListener((Map<String, dynamic> data) {
-      // Print notification payload data
       print('Notification clicked: $data');
 
-      // Extract notification messsage
       String message = data['message'];
       List<String> splitMessage = getSplitMessage(message, ":");
       if (splitMessage.length == 9) {
-        // Display an alert with the "message" payload value
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -126,8 +93,6 @@ class _BlockPayAppState extends State<BlockPayApp> {
                 transactionId: message[8]);
           },
         );
-
-        // Clear iOS app badge number
         Pushy.clearBadge();
       }
     });
