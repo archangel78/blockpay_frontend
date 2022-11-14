@@ -14,10 +14,11 @@ void main() {
 
 List<String> getSplitMessage(String s1, String s2) {
   int idx = s1.indexOf(s2);
-  List<String> parts = [
-    s1.substring(0, idx).trim(),
-    s1.substring(idx + 1).trim()
-  ];
+  List<String> parts = s1.split(s2);
+  // List<String> parts = [
+  //   s1.substring(0, idx).trim(),
+  //   s1.substring(idx + 1).trim()
+  // ];
   return parts;
 }
 
@@ -34,7 +35,9 @@ void backgroundNotificationListener(Map<String, dynamic> data) {
   // Attempt to extract the "message" property from the payload
   String messageText = data['message'] ?? "NULL";
   List<String> splitMessage = getSplitMessage(messageText, ":");
-  if (splitMessage.length < 2) {
+  print(splitMessage);
+  print(splitMessage.length);
+  if (splitMessage.length > 1) {
     String notificationTitle = splitMessage[0];
     String notificationText = splitMessage[1];
 

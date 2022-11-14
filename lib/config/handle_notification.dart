@@ -30,9 +30,7 @@ class HandleNotification {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestPermission();
 
-    print("Handled");
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("yes got message");
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       String? description = channel.description;

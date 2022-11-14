@@ -179,6 +179,9 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
     String name = nameFieldController.text;
     String phone = phoneFieldController.text;
     bool successfulReq = true;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String deviceToken = prefs.getString("notDeviceToken") ?? "None";
+
     var url = HttpManager.getCreateAccountEndpoint();
     var response = await http.post(url, headers: {
       "accountname": widget.username,
@@ -186,7 +189,8 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
       "password": widget.password,
       "Phoneno": phone,
       "Name": name,
-      "Countrycode": "91"
+      "Countrycode": "91",
+      "Devicetoken": deviceToken
     }).catchError((error) {
       successfulReq = false;
     });
@@ -202,7 +206,6 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
       });
       return false;
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     var value1 = await prefs.setString("accessToken", body["accessToken"]);
     var value2 = await prefs.setString("refreshToken", body["refreshToken"]);
@@ -220,10 +223,7 @@ class _CompleteSignUpState extends State<CompleteSignUp> {
       TextEditingController controller,
       TextInputType textInputType) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 12.0,
-        horizontal: 15
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15),
       child: TextField(
         obscureText: isPassword,
         controller: controller,

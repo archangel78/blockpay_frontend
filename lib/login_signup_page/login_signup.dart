@@ -396,15 +396,15 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       });
 
                       if (successfulPV) {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CompleteSignUp(
-                                      username: unameSUpController.text,
-                                      emailId: emailSUpController.text,
-                                      password: passwordSUController.text,
-                                    )),
-                            ModalRoute.withName("/"));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CompleteSignUp(
+                                    username: unameSUpController.text,
+                                    emailId: emailSUpController.text,
+                                    password: passwordSUController.text,
+                                  )),
+                        );
                       }
                     } else {
                       String id = idSiController.text;
@@ -494,7 +494,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String deviceToken = prefs.getString("notDeviceToken") ?? "None";
     print(deviceToken);
-    
+
     var url = HttpManager.getLogInEndpoint();
     bool emailValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
