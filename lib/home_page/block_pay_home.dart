@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:blockpay_frontend/config/http_manager.dart';
-import 'package:blockpay_frontend/home_page/components/invite_section.dart';
 import 'package:blockpay_frontend/home_page/components/more_options.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';

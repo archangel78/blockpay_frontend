@@ -4,7 +4,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HttpManager {
-  static String host = "192.168.201.129";
+  static String host = "192.168.67.129";
   static String port = "8080";
 
   static Uri getPreVerifyEndpoint() {
@@ -57,6 +57,10 @@ class HttpManager {
 
   static Uri getVerifyPhoneEndpoint() {
     return Uri.http("$host:$port", "/verify_phoneno");
+  }
+
+  static Uri getOfflinePayEndpoint() {
+    return Uri.http("$host:$port", "/create_offline_transaction");
   }
 
   static Future<bool> renewAccessToken() async {
